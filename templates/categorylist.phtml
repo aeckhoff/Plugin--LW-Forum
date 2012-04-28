@@ -1,0 +1,136 @@
+<?php if($this->usecss == 1): ?>
+<style>
+    div.lw_forum_wrapper {
+        margin:10px;
+        padding:5px;
+        border:1px dotted grey;
+        font-family: Verdana,sans-serif;
+        font-size:12px;
+    }
+    
+    div.lw_forum_wrapper h1 {
+        margin:0;
+        padding:0;
+        font-size:22px;
+    }
+    
+    div.lw_forum_wrapper h2 {
+        margin:0;
+        margin-top:20px;
+        padding:0;
+        font-size:18px;
+    }
+    
+    div.lw_forum_newthreadlink {
+        margin:10px 0;
+    }
+    
+    div.lw_forum_wrapper table {
+        width:95%;
+        border-collapse:collapse;
+        font-size:12px;
+    }
+    
+    div.lw_forum_wrapper table thead tr th {
+        border-bottom:1px solid grey;
+        text-align:left;
+    }
+    
+    div.lw_forum_wrapper table tbody tr.odd {
+        background-color:#cccccc;
+    }
+
+    div.lw_forum_wrapper table tbody tr.even {
+        background-color:#eeeeee;
+    }
+    
+    div.lw_forum_wrapper table tbody tr td {
+        padding:5px;
+    }     
+    
+</style>
+<?php endif; ?>
+<div class="lw_forum_wrapper">
+    <h2><?php echo $this->categoryName; ?></h2>
+    <div class="lw_forum_breadcrumb">
+        <a href="<?php echo lw_page::getInstance($this->forumID)->getUrl(); ?>">Forum</a> &lt; <?php echo $this->categoryName; ?>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <?php if($view->showThreadRead): ?>
+                <th class="lw_forum_unread">
+                    new
+                </th>
+                <?php endif; ?>
+                <th class="lw_forum_title">
+                    title
+                </th>
+                <th class="lw_forum_topics">
+                    topics
+                </th>
+                <th class="lw_forum_posts">
+                    posts
+                </th>
+                <th class="lw_forum_lastpost">
+                    last post
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+<?php
+    $threads = $this->dh->getAllThreadsByCategoryId($this->categoryID);
+    foreach($threads as $thread) {
+        ?>
+            <tr>
+                <?php if($view->showThreadRead): ?>
+                <td class="lw_forum_unread">
+                    <?php
+                        if ($this->dh->isThreadUnreadByUser($thread['id'], $this->userID)) {
+                            echo "new"; 
+                        }
+                    ?>
+                </td>
+                <?php endif; ?>
+                <td class="lw_forum_title">
+                    <a href="<?php echo lw_page::getInstance($thread['id'])->getUrl(); ?>"><?php echo $thread['name']; ?></a>
+                </td>
+                <td class="lw_forum_topics">
+                    <?php 
+                        $numberoftopics = $this->dh->getTotalNumberOfTopicsByThread($thread['id']);
+                        echo $numberoftopics; 
+                        $totaltopics = $totaltopics + $numberoftopics;
+                    ?>
+                </td>
+                <td class="lw_forum_posts">
+                    <?php 
+                        $numberofposts = $this->dh->getTotalNumberOfPostsByThread($thread['id']);
+                        echo $numberofposts; 
+                        $totalposts = $totalposts + $numberofposts;
+                    ?>
+                </td>
+                <td class="lw_forum_lastpost">
+                    <?php 
+                        $result = $this->dh->getLastPostByThreadID($thread['id']); 
+                        echo $this->formatDate($result['lw_first_date']); 
+                    ?> (<?php 
+                        $user = lw_forumUser::getLwForumUserObjectById($result['opt1number']);
+                        if (is_object($user)) { echo $user->getName(); } else { echo "unknown user"; } 
+                    ?>)
+                </td>                
+            </tr>
+        <?php
+    }
+?>
+        </tbody>
+    </table>
+    <?php if ($this->showMiniStatistic): ?>
+    <div class="lw_forum_ministatistics">
+        <ul>
+            <li>Number of Threads: <?php echo $totaltopics; ?></li>
+            <li>Number of Posts: <?php echo $totalposts; ?></li>
+        </ul>
+    </div>        
+    <?php endif; ?>
+    
+</div>

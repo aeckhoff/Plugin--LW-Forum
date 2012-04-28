@@ -1,0 +1,146 @@
+<?php if($this->usecss == 1): ?>
+<style>
+    div.lw_forum_wrapper {
+        margin:10px;
+        padding:5px;
+        border:1px dotted grey;
+        font-family: Verdana,sans-serif;
+        font-size:12px;
+    }
+    
+    div.lw_forum_wrapper h1 {
+        margin:0;
+        padding:0;
+        font-size:22px;
+    }
+    
+    div.lw_forum_wrapper h2 {
+        margin:0;
+        margin-top:20px;
+        padding:0;
+        font-size:18px;
+    }
+    
+    div.lw_forum_newtopiclink, div.lw_forum_breadcrumb {
+        margin:10px 0;
+    }
+    
+    div.lw_forum_wrapper table {
+        width:95%;
+        border-collapse:collapse;
+        font-size:12px;
+    }
+    
+    div.lw_forum_wrapper table thead tr th {
+        border-bottom:1px solid grey;
+        text-align:left;
+    }
+    
+    div.lw_forum_wrapper table tbody tr.odd {
+        background-color:#cccccc;
+    }
+
+    div.lw_forum_wrapper table tbody tr.even {
+        background-color:#eeeeee;
+    }
+    
+    div.lw_forum_wrapper table tbody tr td {
+        padding:5px;
+    }     
+    
+</style>
+<?php endif; ?>
+<div class="lw_forum_wrapper">
+    <h2><?php echo $this->threadName; ?></h2>
+    <div class="lw_forum_breadcrumb">
+        <a href="<?php echo lw_page::getInstance($this->forumID)->getUrl(); ?>">Forum</a> 
+        <?php if($this->showCategories): ?>
+        &lt; <a href="<?php echo lw_page::getInstance($this->categoryID)->getUrl(); ?>"><?php echo $this->categoryName; ?></a> 
+        <?php endif; ?>
+        &lt; <?php echo $this->threadName; ?>
+    </div>
+    <div class="lw_forum_newtopiclink">
+        <a href="<?php echo $this->newtopicurl; ?>">new topic</a>
+    </div>
+    <table>
+        <thead>
+            <tr>
+                <?php if($this->showThreadRead): ?>
+                <th class="lw_forum_unread">
+                    new
+                </th>
+                <?php endif; ?>
+                <th class="lw_forum_title">
+                    title
+                </th>
+                <?php if($this->showReplies): ?>
+                <th class="lw_forum_replies">
+                    replies
+                </th>
+                <?php endif; ?>
+                <th class="lw_forum_author">
+                    author
+                </th>
+                <th class="lw_forum_lastpost">
+                    last post
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach($this->topics as $topic): 
+                if ($oddeven == "even") $oddeven = "odd"; else $oddeven = "even";
+                ?>
+            <tr class="<?php echo $oddeven; ?>">
+                <?php if($this->showThreadRead): ?>
+                <td class="lw_forum_unread">
+                    <?php 
+                        if ($this->dh->isTopicUnreadByUser($topic['id'], $this->userID)) {
+                            echo "new"; 
+                        }
+                    ?>
+                </td>
+                <?php endif; ?>
+                <td class="lw_forum_title">
+                    <a href="<?php echo lw_page::getInstance()->getUrl(array("topicID" => $topic['id'])); ?>"><?php echo $topic['name']; ?></a>
+                </td>
+                <?php if($this->showReplies): ?>
+                <td class="lw_forum_replies">
+                    <?php echo $this->dh->getRepliesByTopicID($topic['id']); ?>
+                </td>
+                <?php endif; ?>
+                <td class="lw_forum_author">
+                    <?php 
+                    $user = lw_forumUser::getLwForumUserObjectById($topic['opt1number']);
+                    if (is_object($user)) {
+                        echo $user->getName(); 
+                        if ($this->showNumberOfPostsForUser): 
+                            ?> [<?php echo $user->getNumberOfPosts(); ?>post(s)] <?php
+                        endif; 
+                    } else {
+                        ?> unknown user<?php
+                    }
+                    ?>
+                </td>
+                <td class="lw_forum_lastpost">
+                    <?php 
+                        $result = $this->dh->getLastPostByTopicID($topic['id']); 
+                        echo $this->formatDate($result['lw_first_date']); 
+                    ?> (<?php 
+                        if (is_object($user)) { echo $user->getName(); } else { echo "unknown user"; } 
+                    ?>)
+                </td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+    
+    <?php if ($this->showMiniStatistic): ?>
+    <div class="lw_forum_ministatistics">
+        <ul>
+            <li>Number of Topics: <?php echo $this->dh->getTotalNumberOfTopicsByThread($this->threadID); ?></li>
+            <li>Number of Posts: <?php echo $this->dh->getTotalNumberOfPostsByThread($this->threadID); ?></li>
+        </ul>
+    </div>
+    <?php endif; ?>
+    
+</div>

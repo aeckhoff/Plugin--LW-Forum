@@ -1,0 +1,47 @@
+<form action="<?php echo $this->actionurl; ?>" method="post">
+    <fieldset class="lwadminform">
+        <legend class="lwadminform">Grunddaten</legend>
+
+        <label for="name" class="lwadminform">ausblenden:</label>
+        <div class="commentbox">
+            <div style="margin-left:8px">
+                <input type="checkbox" name="lwf_read" value="1" <?php if($this->data['lwf_read'] == 1) { echo ' checked="checked" '; } ?>/> Thread read<br/>
+                <input type="checkbox" name="lwf_replies" value="1" <?php if($this->data['lwf_replies'] == 1) { echo ' checked="checked" '; } ?>/> Replies<br/>
+                <input type="checkbox" name="lwf_statistic" value="1" <?php if($this->data['lwf_statistic'] == 1) { echo ' checked="checked" '; } ?>/> Mini Statistic<br/>
+                <input type="checkbox" name="lwf_numberofposts" value="1" <?php if($this->data['lwf_numberofposts'] == 1) { echo ' checked="checked" '; } ?>/> Number of posts for user<br/>
+
+            </div>
+        </div>
+        <br />		
+
+        <p><input class="formbutton" type="submit" value="&raquo; speichern" id="speichern"></p>
+    </fieldset>
+</form>
+
+<fieldset class="lwadminform">
+
+	<legend class="lwadminform">Moderatorenzuweisung</legend>
+	<?php echo $this->rightslink; ?>
+	<br/>	
+	
+	<?php if (is_array($this->intranets) && count($this->intranets)>0): ?>
+	<br/>
+	zugeordnete Intranets:
+	<ul>
+	<?php foreach($this->intranets as $intranet): ?>
+		<li><?php echo $intranet['name']; ?></li>
+	<?php endforeach; ?>
+	</ul>	
+	<?php endif; ?>
+
+	<?php if (is_array($this->users) && count($this->users)>0): ?>
+	<br/>
+	zugeordnete Benutzer:
+	<ul>
+	<?php foreach($this->users as $user): ?>
+		<li><?php echo $user['name']; ?></li>
+	<?php endforeach; ?>
+	</ul>	
+	<?php endif; ?>
+
+</fieldset>

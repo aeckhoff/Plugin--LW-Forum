@@ -1,0 +1,149 @@
+<?php if($this->usecss == 1): ?>
+<style>
+    div.lw_forum_wrapper {
+        margin:10px;
+        padding:5px;
+        border:1px dotted grey;
+        font-family: Verdana,sans-serif;
+        font-size:12px;
+    }
+    
+    div.lw_forum_wrapper h1 {
+        margin:0;
+        padding:0;
+        font-size:22px;
+    }
+    
+    div.lw_forum_wrapper h2 {
+        margin:0;
+        margin-top:20px;
+        padding:0;
+        font-size:18px;
+    }
+    
+    div.lw_forum_backlink {
+        margin:10px 0;
+    }
+    
+    div.lw_forum_wrapper table {
+        width:95%;
+        border-collapse:collapse;
+        font-size:12px;
+    }
+    
+    div.lw_forum_wrapper table thead tr th {
+        border-bottom:1px solid grey;
+        text-align:left;
+    }
+    
+    div.lw_forum_wrapper table tbody tr.odd {
+        background-color:#cccccc;
+    }
+
+    div.lw_forum_wrapper table tbody tr.even {
+        background-color:#eeeeee;
+    }
+    
+    div.lw_forum_wrapper table tbody tr td div.lw_forum_entry_title {
+        font-weight:bold;
+    }
+    
+    div.lw_forum_wrapper table tbody tr td div.lw_forum_entry_title, div.lw_forum_wrapper table tbody tr td div.lw_forum_user {
+        margin-bottom:5px;
+    }
+
+    div.lw_forum_wrapper table tbody tr td.lw_forum_content {
+        width:70%;
+        padding:5px;
+    }     
+    
+    div.lw_forum_wrapper table tbody tr td.lw_forum_metadata {
+        width:30%;
+    }     
+    
+    div.lw_forum_wrapper table tbody tr td {
+        padding:0px;
+        border:0;
+    }
+    
+</style>
+<?php endif; ?>
+<div class="lw_forum_wrapper">
+    <h2><?php echo $this->entries[0]['name']; ?></h2>
+    <div class="lw_forum_backlink">
+        <a href="<?php echo $this->threadlisturl; ?>">back to threadlist</a>
+    </div>
+    <div>
+        <table>
+            <thead>
+                <tr>
+                    <th class="lw_forum_content">
+                        title / text
+                    </th>
+                    <th class="lw_forum_metadata">
+                        author / date of posting
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <?php if ($this->entries): foreach($this->entries as $entry): 
+                    if ($oddeven == "even") $oddeven = "odd"; else $oddeven = "even";
+                    ?>
+                <tr class="<?php echo $oddeven; ?>">
+                    <td class="lw_forum_content">
+                        <div class="lw_forum_entry_title"><?php echo $entry['name']; ?></div>
+                        <div class="lw_forum_text"><?php echo nl2br($entry['opt1clob']); ?></div>
+                    </td>
+                    <td class="lw_forum_metadata">
+                        <div class="lw_forum_user"><?php $user = lw_forumUser::getLwForumUserObjectById($entry['opt1number']); echo $user->getName(); ?>
+                        <?php if ($this->showNumberOfPostsForUser): ?>
+                            [<?php echo $user->getNumberOfPosts(); ?> post(s)]
+                        <?php endif; ?>
+                        </div>
+                        <div class="lw_forum_date"><?php echo $this->formatDate($entry['lw_first_date']); ?></div>
+                        <?php 
+                            if ($entry['lw_last_date'] != $entry['lw_first_date']): ?>
+                                <div class="lw_forum_editdate">
+                                    <?php echo $this->formatDate($entry['lw_last_date']); ?> edited<?php 
+                                    if ($entry['opt2bool'] == 1): echo " by Moderator"; endif; 
+                                    ?>
+                                </div>
+                            <?php endif;
+                        ?>
+                        <?php if ($entry['opt1number'] == $this->actualUserId || $this->isModerator): ?>
+                        <a href="<?php echo lw_page::getInstance()->getUrl(array('topicID'=>$this->topicID, 'edit'=>$entry['id'])); ?>">edit</a> | <a href="<?php echo lw_page::getInstance()->getUrl(array('topicID'=>$this->topicID, 'delete'=>$entry['id'])); ?>" onclick="return confirm('wirklich entfernen?');">delete</a>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+
+            <td>
+                <?php endforeach; endif; ?>
+            </tbody>
+        </table>
+    </div>
+    <div>
+        <h3>New Reply</h3>
+        <form id="lw_forum_replyform" action="<?php echo $this->savenewreplyurl; ?>" method="POST">
+            <div class="lw_form_fieldwrapper">
+                <div class="lw_form_fieldlabel">
+                    Title
+                </div>
+                <div class="lw_form_fieldinput">
+                    <input type="text" name="title" size="50" value="<?php echo $this->title; ?>" />
+                </div>
+            </div>
+            <div class="lw_form_fieldwrapper">
+                <div class="lw_form_fieldlabel">
+                    Text
+                </div>
+                <div class="lw_form_fieldinput">
+                    <textarea name="text" cols="50" rows="8"><?php echo $this->text; ?></textarea>
+                </div>
+            </div>
+            <div class="lw_form_submitbutton">
+                <input type="submit" value="send" />
+            </div>
+        </form>
+    </div>
+</div>

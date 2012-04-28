@@ -1,0 +1,16 @@
+<h1>Forum Konfiguration</h1>
+<div>
+    <a href="<?php echo $this->forumlisturl; ?>">back to forumlist</a>
+</div>
+<form action ="<?php echo $this->configsaveurl; ?>" method="POST">
+    <div class="lw_form_fieldwrapper">
+        <input type="checkbox" name="lwf_read" value="1" <?php if($this->data['opt1number'] == 1) { echo ' checked="checked" '; } ?>/> Thread read<br/>
+        <input type="checkbox" name="lwf_replies" value="1" <?php if($this->data['opt2number'] == 1) { echo ' checked="checked" '; } ?>/> Replies<br/>
+        <input type="checkbox" name="lwf_statistic" value="1" <?php if($this->data['opt3number'] == 1) { echo ' checked="checked" '; } ?>/> Mini Statistic<br/>
+        <input type="checkbox" name="lwf_numberofposts" value="1" <?php if($this->data['opt4number'] == 1) { echo ' checked="checked" '; } ?>/> Number of posts for user<br/>
+        <input type="checkbox" name="lwf_categories" value="1" <?php if($this->data['opt5number'] == 1) { echo ' checked="checked" '; } ?>/> Categories<br/>
+    </div>
+    <div class="lw_form_submitbutton">
+        <input type="submit" value="send" />
+    </div>
+</form>

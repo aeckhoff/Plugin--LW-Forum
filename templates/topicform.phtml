@@ -1,0 +1,25 @@
+<h1><?php echo $this->headline; ?></h1>
+<div>
+    <a href="<?php echo $this->threadlisturl; ?>">back to topiclist</a>
+</div>
+<form action ="<?php echo $this->savenewtopicurl; ?>" method="POST">
+    <div class="lw_form_fieldwrapper">
+        <div class="lw_form_fieldlabel">
+            Title
+        </div>
+        <div class="lw_form_fieldinput">
+            <input type="text" name="title" size="50" value="<?php echo $this->title; ?>" />
+        </div>
+    </div>
+    <div class="lw_form_fieldwrapper">
+        <div class="lw_form_fieldlabel">
+            Text
+        </div>
+        <div class="lw_form_fieldinput">
+            <textarea name="text" cols="50" rows="8"><?php echo $this->text; ?></textarea>
+        </div>
+    </div>
+    <div class="lw_form_submitbutton">
+        <input type="submit" value="send" />
+    </div>
+</form>
